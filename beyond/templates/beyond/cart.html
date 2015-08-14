@@ -1,0 +1,130 @@
+{% extends 'beyond/base.html' %}
+
+{% block title %}
+Корзина
+{% endblock %}
+
+{%  block style %}
+<style>
+.thumbnail{
+    height: auto;
+    padding-bottom: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Корзина</h1>
+    <div class="thumbnail">
+    {% if cart.item_list|length == 0 %}
+    <p>
+    Корзина пуста
+    </p>
+    {% else %}
+    {% for item in cart.item_list %}
+    <div class="well">
+        <div class="row">
+            <div class="col-md-3">
+                <a href="{% url 'picture' item.product.id %}"><img src="{{ item.product.thumbnail_url }}" /></a>
+            </div>
+            <div class="col-md-8">
+                <h4><a href="{% url 'picture' item.product.id %}">{{ item.product.title }}</a></h4>
+            </div>
+            <div class="col-md-1">
+                <a href="{% url 'delete_from_cart' item.product.id %}"><span style="font-size: 28px;" class="glyphicon glyphicon-remove"></span></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+        <div>
+            <button class="btn btn-warning" onclick="location.href='{% url 'clear_cart' %}'">Очистить корзину</button>
+        </div>
+    {% endif %}
+    </div>
+    {% if cart.item_list|length != 0 %}
+    <div class="well" style="">
+        <form id="order" class="form-horizontal">
+        <fieldset>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="ni">Имя</label>
+          <div class="col-md-5">
+          <input id="ni" name="ni" type="text" placeholder="" class="form-control input-md" required="">
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="em">Email</label>
+          <div class="col-md-5">
+          <input id="em" name="em" type="email" placeholder="email@email.com" class="form-control input-md" required="">
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="phn">Номер телефона</label>
+          <div class="col-md-5">
+            <div class="input-group">
+              <span class="input-group-addon">+375</span>
+              <input id="phn" name="phn" class="form-control" placeholder="" type="text" required="">
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="addr">Адрес доставки</label>
+          <div class="col-md-5">
+            <div class="input-group">
+              <span class="input-group-addon">Минск</span>
+              <input id="addr" name="addr" class="form-control" placeholder="" type="text" required="">
+            </div>
+            <p class="help-block">Доставка только по Минску</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="cm">Комментарий</label>
+          <div class="col-md-4">
+            <textarea class="form-control" id="cm" name="cm"></textarea>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="cmp"></label>
+          <div class="col-md-4">
+            <button id="cmp" name="cmp" class="btn btn-primary">Сделать заказ</button>
+          </div>
+        </div>
+
+        </fieldset>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+    {% load staticfiles %}
+    <script src="{% static 'beyond/js/jquery.maskedinput-1.3.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("#phn").mask("(99)-999-9999");
+            $("#order").submit(function(event){
+                var itemCount = {{ cart.item_list|length }};
+
+                if(itemCount > 0){
+                    event.preventDefault()
+                    $.ajax({
+                        url: '{% url 'order' %}?' + $("#order").serialize() + '&ps={{ items_ids }}',
+                        type: 'POST'
+                    }).success(function(w,e){
+                        location.href = '{% url 'home' %}'
+                    }).error(function(w,e){
+                        location.href = '{% url 'pictures' %}'
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

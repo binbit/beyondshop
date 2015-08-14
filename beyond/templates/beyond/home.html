@@ -1,0 +1,51 @@
+{% extends 'beyond/base.html' %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block style %}
+<style>
+.carousel-caption {
+    position: static;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Some pictures</h1>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="10000">
+        <div class="carousel-outer" style="min-height: 200px">
+            <div class="carousel-inner" role="listbox">
+                {% for picture in pictures %}
+                    {% if forloop.counter == 1 %}
+                        <div class="item active">
+                            <img style="margin: 0 auto;" height="800px" src="{{ picture.main_picture_url }}">
+                            <div class="carousel-caption">
+                                <h4><a href="{% url 'picture' picture.id %}">{{ picture.title }}</a></h4>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="item">
+                            <img height="800px" src="{{ picture.main_picture_url }}">
+                            <div class="carousel-caption">
+                                <h4><a href="{% url 'picture' picture.id %}">{{ picture.title }}</a></h4>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if pictures|length > 1 %}
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

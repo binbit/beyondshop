@@ -1,0 +1,75 @@
+{% extends 'beyond/base.html' %}
+
+{% block title %}
+Картины
+{% endblock %}
+
+{% block style %}
+<style>
+.thumbnail{
+    height: 350px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <p class="lead">Категории</p>
+            <div class="list-group">
+                {% if category_id == None %}
+                    <a href="{% url 'pictures' %}" class="list-group-item active">Все</a>
+                {% else %}
+                    <a href="{% url 'pictures' %}" class="list-group-item">Все</a>
+                {% endif %}
+                {% for category in categories %}
+                    {% if category_id == category.id %}
+                        <a href="{% url 'pictures' category.id %}" class="list-group-item active">{{ category.name }}</a>
+                    {% else %}
+                        <a href="{% url 'pictures' category.id %}" class="list-group-item">{{ category.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row">
+                {% load app_filters %}
+                {% for picture in pictures %}
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                    <div class="thumbnail">
+                        <a href="{% url 'picture' picture.id %}"><img src="{{ picture.thumbnail_url }}" alt=""></a>
+                        <div class="caption">
+                            <h4 class="pull-right">{{ picture.cost }}</h4>
+                            <h4><a href="{% url 'picture' picture.id %}">{{ picture.title }}</a>
+                            </h4>
+                            <h5>Размер(см x см): {{ picture.size }}</h5>
+                            <p style="height: 55px">{{ picture.short_description }}</p>
+                            <p class="pull-right">
+                                {% if in_cart|lookup:forloop.counter0 == True %}
+                                    <button class="btn btn-warning" onclick="location.href = '{% url 'cart' %}'">Уже в корзине</button>
+                                {% else %}
+                                    <button class="btn btn-primary" onclick="location.href = '{% url 'add_to_cart' picture.id %}'">Добавить в корзину</button>
+                                {% endif %}
+                            </p>
+                        </div>
+{#                        <div class="ratings">#}
+{#                            <p class="pull-right">15 reviews</p>#}
+{#                            <p>#}
+{#                                <span class="glyphicon glyphicon-star"></span>#}
+{#                                <span class="glyphicon glyphicon-star"></span>#}
+{#                                <span class="glyphicon glyphicon-star"></span>#}
+{#                                <span class="glyphicon glyphicon-star"></span>#}
+{#                                <span class="glyphicon glyphicon-star"></span>#}
+{#                            </p>#}
+{#                        </div>#}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
