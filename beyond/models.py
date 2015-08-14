@@ -92,7 +92,7 @@ class ImageProperty(models.Model):
     def create_thumbnail(self):
         if not self.image:
             return
-
+        # make thumbnail for image
         from PIL import Image
         from cStringIO import StringIO
         from django.core.files.uploadedfile import SimpleUploadedFile
