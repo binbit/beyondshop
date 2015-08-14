@@ -39,19 +39,15 @@ def pictures(request, category_id=None):
 
 
 def cart(request):
-    print request.session['color']
     cart = Cart(request)
-    items_ids = ",".join(str(item.product.id) for item in cart.item_list)
-    context = dict(cart=cart, items_ids=items_ids)
+    items_ids = ",".join(str(item) for item in cart.item_list)
+    pictures = Picture.objects.filter(pk__in=cart.item_list)
+    context = dict(cart=cart, items_ids=items_ids, pictures=pictures)
     return render(request, 'beyond/cart.html', context)
 
 
 def add_to_cart(request, picture_id):
     cart = Cart(request)
-    if int(picture_id) == 1:
-        request.session['color'] = 'red'
-    else:
-        request.session['color'] = 'blue'
     cart.add(Picture.objects.get(id=picture_id))
     cart.save(request)
     return redirect('cart')

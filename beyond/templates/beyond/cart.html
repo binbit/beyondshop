@@ -21,17 +21,17 @@
     Корзина пуста
     </p>
     {% else %}
-    {% for item in cart.item_list %}
+    {% for item in pictures %}
     <div class="well">
         <div class="row">
             <div class="col-md-3">
-                <a href="{% url 'picture' item.product.id %}"><img src="{{ item.product.thumbnail_url }}" /></a>
+                <a href="{% url 'picture' item.id %}"><img src="{{ item.thumbnail_url }}" /></a>
             </div>
             <div class="col-md-8">
-                <h4><a href="{% url 'picture' item.product.id %}">{{ item.product.title }}</a></h4>
+                <h4><a href="{% url 'picture' item.id %}">{{ item.title }}</a></h4>
             </div>
             <div class="col-md-1">
-                <a href="{% url 'delete_from_cart' item.product.id %}"><span style="font-size: 28px;" class="glyphicon glyphicon-remove"></span></a>
+                <a href="{% url 'delete_from_cart' item.id %}"><span style="font-size: 28px;" class="glyphicon glyphicon-remove"></span></a>
             </div>
         </div>
     </div>
